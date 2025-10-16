@@ -36,14 +36,16 @@
     html { scroll-behavior: smooth; }
     .glass { backdrop-filter: blur(8px); background: rgba(255,255,255,0.04); }
     .code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-    /* neon caret */
     @keyframes pulseGlow { 0%,100%{box-shadow:0 0 0 rgba(0,229,255,0)} 50%{box-shadow:0 0 24px rgba(0,229,255,0.35)}}
+    @keyframes gridMove { from { background-position: 0 0 } to { background-position: 1000px 500px } }
+    #bg-anim { background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.04) 1px, transparent 0); background-size:22px 22px; animation: gridMove 60s linear infinite; }
   </style>
 </head>
 <body class="bg-ink text-white selection:bg-primary/30">
   <div id="root"></div>
 
-  <script type="text/babel">
+  <!-- NOTE: add data-presets="react" so JSX compiles -->
+  <script type="text/babel" data-presets="react">
     const { useEffect, useMemo, useRef, useState } = React;
 
     // ---------- helpers ----------
@@ -52,10 +54,8 @@
     const sections = [
       { id: 'home', label: 'Home' },
       { id: 'about', label: 'About' },
-      { id: 'skills', label: 'Skills' },
       { id: 'projects', label: 'Projects' },
       { id: 'resume', label: 'Resume' },
-      { id: 'ai', label: 'AI Lab' },
       { id: 'contact', label: 'Contact' },
     ];
 
@@ -123,7 +123,7 @@
                 <span className="code text-sm">felipe.dev</span>
               </a>
               <button className="md:hidden px-3 py-2" onClick={() => setOpen((v) => !v)} aria-label="Toggle menu">
-                <i data-lucide="menu" class="w-5 h-5"></i>
+                <i data-lucide="menu" className="w-5 h-5"></i>
               </button>
               <ul className={cx("md:flex md:items-center md:gap-1", open ? "block" : "hidden md:block") }>
                 {sections.map((s) => (
@@ -155,30 +155,34 @@
           <div className="grid items-center gap-10 md:grid-cols-2">
             <div>
               <p className="code mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs">
-                <span className="h-1 w-1 rounded-full bg-primary"></span> Senior IT Major • Graduating Spring 2026
+                <span className="h-1 w-1 rounded-full bg-primary"></span> IT Senior • Graduating Spring 2026
               </p>
               <h1 className="text-4xl font-extrabold leading-tight md:text-5xl">
-                Hey, I'm Felipe —
-                <span className="block text-primary">Java coder, Python‑proficient, SQL learner.</span>
+                Felipe Cifuentes
+                <span className="block text-primary">IT major passionate about understanding how systems work — and how to protect them.</span>
               </h1>
-              <p className="mt-4 text-white/80">Building clean, reliable systems and human‑friendly interfaces. Passionate about networking, security basics, and shipping useful tools.</p>
+              <p className="mt-4 text-white/80">Java developer, proficient in Python, learning SQL. Focused on clean code and practical problem-solving.</p>
               <div className="mt-6 flex flex-wrap items-center gap-3">
-                <Button onClick={() => document.getElementById('ai').scrollIntoView({behavior:'smooth'})}>
-                  <i data-lucide="sparkles" class="w-4 h-4"></i>
+                <Button onClick={() => document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
+                  <i data-lucide="sparkles" className="w-4 h-4"></i>
                   Try AI Lab
                 </Button>
                 <a href="#projects" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">
-                  <i data-lucide="terminal" class="w-4 h-4"></i>
+                  <i data-lucide="terminal" className="w-4 h-4"></i>
                   See Projects
                 </a>
               </div>
             </div>
             <Card className="relative">
               <div className="code text-xs text-white/70">$ whoami</div>
-              <pre className="code mt-2 whitespace-pre-wrap text-sm">Felipe Cifuentes — Global Social Media @ AutogenAI\nStack: Java • Python • SQL • HTML/CSS/JS\nFocus: Full‑stack fundamentals, security, networks\nCurrently: Finishing senior year • Building portfolio\nLocation: USA / UK</pre>
+              <pre className="code mt-2 whitespace-pre-wrap text-sm">Felipe Cifuentes
+Goal: Cybersecurity Analyst
+Stack: Java • Python • SQL (learning)
+Education: Kean University (IT/Cybersecurity)
+Location: Linden, NJ, USA</pre>
               <div className="absolute -right-6 -top-6 hidden rotate-6 md:block">
                 <span className="inline-flex animate-[pulseGlow_2.5s_ease-in-out_infinite] items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-3 py-2 text-xs text-primary shadow-glow">
-                  <i data-lucide="cpu" class="w-4 h-4"></i> Tech‑themed UI
+                  <i data-lucide="cpu" className="w-4 h-4"></i> Tech-themed UI
                 </span>
               </div>
             </Card>
@@ -194,20 +198,20 @@
           <div className="grid gap-6 md:grid-cols-3">
             <Card className="md:col-span-2">
               <p className="leading-relaxed text-white/85">
-                I'm an <strong>IT major senior</strong> graduating in <strong>Spring 2026</strong>. I code in <strong>Java</strong>, am proficient in <strong>Python</strong>, and I'm actively learning <strong>SQL</strong>.
-                I enjoy solving practical problems, explaining complex topics simply, and shipping small tools that help classmates and teams.
+                Senior IT major at <strong>Kean University</strong>, graduating <strong>Spring 2026</strong>. Comfortable with <strong>Java</strong>, proficient in <strong>Python</strong>, and actively learning <strong>SQL</strong>. Career goal: <strong>Cybersecurity Analyst</strong>.
               </p>
               <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Comfortable with Git & CLI</li>
-                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Basic networking & security concepts</li>
-                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Front‑end fundamentals (React style)</li>
-                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Clear documentation & presentation</li>
+                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" className="w-4 h-4 text-primary"></i> Problem-solver</li>
+                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" className="w-4 h-4 text-primary"></i> Team player</li>
+                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" className="w-4 h-4 text-primary"></i> Leader</li>
+                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" className="w-4 h-4 text-primary"></i> Clear documentation & presentation</li>
               </ul>
             </Card>
             <Card>
               <h3 className="mb-2 font-semibold">Fast facts</h3>
               <div className="space-y-2 text-white/85">
-                <div><span className="text-white/60">Degree:</span> B.S. Information Technology</div>
+                <div><span className="text-white/60">University:</span> Kean University</div>
+                <div><span className="text-white/60">Degree:</span> B.S. IT / Cybersecurity</div>
                 <div><span className="text-white/60">Grad Date:</span> Spring 2026</div>
                 <div><span className="text-white/60">Interests:</span> Security, web apps, DevTools</div>
                 <div><span className="text-white/60">Based:</span> NJ / NY area</div>
@@ -218,187 +222,105 @@
       </section>
     );
 
-    const Skills = () => (
-      <section id="skills" className="py-16">
-        <Container>
-          <SectionTitle kicker="Skills" title="Tools & languages I use" />
-          <Card>
-            <div className="flex flex-wrap gap-2">
-              {['Java','Python','SQL','HTML','CSS','JavaScript','Git','Linux Basics','Networking'].map((s) => (
-                <Badge key={s}>{s}</Badge>
-              ))}
-            </div>
-          </Card>
-        </Container>
-      </section>
-    );
-
     const Projects = () => (
       <section id="projects" className="py-16">
         <Container>
-          <SectionTitle kicker="Projects" title="Things I’ve built" right={<a href="#contact" className="text-sm text-primary">Need a demo? →</a>} />
+          <SectionTitle kicker="Projects" title="Things I’ve built" right={<a href="#contact" className="text-sm text-primary">Contact me →</a>} />
           <div className="grid gap-6 md:grid-cols-3">
-            {[
-              { title: 'Network Tools', desc: 'Small React widgets that explain subnetting & ports visually.', tags: ['React','JavaScript'] },
-              { title: 'CLI Helper', desc: 'Python script that scaffolds folders and README files for labs.', tags: ['Python'] },
-              { title: 'SQL Practice', desc: 'Mini database with queries for joins, grouping, indexes.', tags: ['SQL'] },
-            ].map((p) => (
-              <Card key={p.title}>
-                <h3 className="font-semibold">{p.title}</h3>
-                <p className="mt-1 text-sm text-white/80">{p.desc}</p>
-                <div className="mt-3 flex flex-wrap gap-2">{p.tags.map((t) => <Badge key={t}>{t}</Badge>)}</div>
-              </Card>
-            ))}
+            <Card>
+              <h3 className="font-semibold">Flight Tracker Pro</h3>
+              <p className="mt-1 text-sm text-white/80">Used a flights API to find the cheapest routes between locations; built as part of coursework.</p>
+              <div className="mt-3 flex flex-wrap gap-2"><Badge>JavaScript</Badge><Badge>API</Badge></div>
+            </Card>
+            {/* Add more <Card> items here as you grow the portfolio */}
           </div>
         </Container>
       </section>
     );
 
     const Resume = () => {
-      const [file, setFile] = useState(null);
-      const [url, setUrl] = useState("");
       return (
         <section id="resume" className="py-16">
           <Container>
-            <SectionTitle kicker="Resume" title="Upload or update your resume" />
+            <SectionTitle kicker="Resume" title="Upload or view" />
             <Card>
-              <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="space-y-2">
-                  <p className="text-white/85">Upload a PDF. It will be available locally as a download link for your presentation.</p>
-                  <input
-                    type="file"
-                    accept="application/pdf"
-                    onChange={(e) => {
-                      const f = e.target.files?.[0];
-                      setFile(f || null);
-                      if (f) setUrl(URL.createObjectURL(f));
-                    }}
-                    className="block rounded-xl border border-white/10 bg-white/5 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/20 file:px-3 file:py-2 file:text-sm file:text-primary"
-                  />
-                  {file && (
-                    <p className="text-sm text-white/70">
-                      Chosen: <span className="code">{file.name}</span> • {(file.size/1024/1024).toFixed(2)} MB
-                    </p>
-                  )}
-                </div>
-                <div>
-                  {url ? (
-                    <a href={url} download className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-2 text-primary">
-                      <i data-lucide="download" class="w-4 h-4"></i> Download copy
+              <details className="group">
+                <summary className="flex cursor-pointer list-none items-center justify-between">
+                  <span className="flex items-center gap-2"><i data-lucide="file-text" className="w-4 h-4 text-primary"></i> <strong className="mr-2">My Resume (PDF)</strong><span className="text-white/60">click to expand</span></span>
+                  <i data-lucide="chevron-down" className="w-4 h-4 transition group-open:rotate-180"></i>
+                </summary>
+                <div className="mt-4 space-y-4">
+                  <p className="text-white/80">Option 1: Upload a PDF now (great for in-class demo). Option 2: Place <code className="code">resume.pdf</code> next to this <code className="code">index.html</code> and it will embed automatically.</p>
+                  <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={(e)=>{ const f=e.target.files?.[0]; if(f){ const u=URL.createObjectURL(f); const frame=document.getElementById('resume-frame'); frame?.setAttribute('src',u);} }}
+                      className="block rounded-xl border border-white/10 bg-white/5 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/20 file:px-3 file:py-2 file:text-sm file:text-primary"
+                    />
+                    <a
+                      href="#resume"
+                      className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-2 text-primary"
+                      onClick={(e)=>{ e.preventDefault(); const f=document.getElementById('resume-frame'); if(f?.getAttribute('src')){f.scrollIntoView({behavior:'smooth'});} }}
+                    >
+                      <i data-lucide="external-link" className="w-4 h-4"></i>Open below
                     </a>
-                  ) : (
-                    <span className="text-white/60">No file selected</span>
-                  )}
+                  </div>
+                  <div className="h-[70vh] w-full overflow-hidden rounded-xl border border-white/10">
+                    <iframe id="resume-frame" title="Resume PDF" className="h-full w-full" src="./resume.pdf"></iframe>
+                  </div>
                 </div>
-              </div>
+              </details>
             </Card>
           </Container>
         </section>
       );
     };
 
-    // ---------- AI Lab (client‑side with optional OpenAI key) ----------
-    function useOpenAI(apiKey) {
-      async function chat(messages, model = 'gpt-4o-mini') {
-        if (!apiKey) {
-          // Local fallback: simple templated output so the demo always works
-          const last = messages[messages.length - 1]?.content || '';
-          return {
-            role: 'assistant',
-            content: `\u2728 Local demo (no API key set). Based on your input, here are tips:\n- Keep it concise.\n- Mention Java, Python, SQL.\n- Add a quantifiable result.\nInput: ${last.slice(0,180)}...`
-          };
-        }
-        const res = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${apiKey}`
-          },
-          body: JSON.stringify({
-            model,
-            messages,
-            temperature: 0.2
-          })
-        });
-        const json = await res.json();
-        const msg = json.choices?.[0]?.message;
-        return msg || { role: 'assistant', content: 'No response' };
+    // ---------- Floating Chatbot ----------
+    const FloatingChat = () => {
+      const [open, setOpen] = React.useState(false);
+      const [q, setQ] = React.useState('Where can I view your resume?');
+      const [msgs, setMsgs] = React.useState([{role:'bot', text:'Hi! Ask about resume, projects, contact, or LinkedIn/GitHub.'}]);
+      function localBot(input) {
+        const t = (input||'').toLowerCase();
+        if (t.includes('resume')) return 'Open Resume → click the card to expand. It embeds resume.pdf or an uploaded PDF.';
+        if (t.includes('project') || t.includes('work')) return 'Projects: Flight Tracker Pro — used an API to find cheap flights between locations.';
+        if (t.includes('about')) return 'About: IT senior at Kean University (Spring 2026). Goal: Cybersecurity Analyst.';
+        if (t.includes('linkedin')) return 'LinkedIn link is in the footer (search for Felipe Cifuentes at Kean University).';
+        if (t.includes('github') || t.includes('code')) return 'GitHub: github.com/felipecifuentes97';
+        if (t.includes('contact') || t.includes('email')) return 'Email: cifuentesfelipe10080@gmail.com';
+        return 'Try asking about: resume, projects, about, LinkedIn, GitHub, or contact.';
       }
-      return { chat };
-    }
-
-    const AILab = () => {
-      const [apiKey, setApiKey] = useState('');
-      const { chat } = useOpenAI(apiKey);
-
-      // Cover letter helper
-      const [job, setJob] = useState('Junior IT Support Intern at Estée Lauder — basic networking, helpdesk, Python scripting helpful.');
-      const [about, setAbout] = useState('Senior IT major (Spring 2026). Java, proficient Python, learning SQL. Interested in security & networks.');
-      const [letter, setLetter] = useState('');
-      const [busy1, setBusy1] = useState(false);
-
-      async function generateLetter() {
-        setBusy1(true);
-        const sys = { role: 'system', content: 'You write concise, confident cover letters for an IT student. 150–180 words. Use plain English. Mention Java, Python, SQL and security/networking interest.' };
-        const usr = { role: 'user', content: `About me: ${about}\nJob: ${job}` };
-        const out = await chat([sys, usr]);
-        setLetter(out.content);
-        setBusy1(false);
-      }
-
-      // Q&A chatbot
-      const [q, setQ] = useState('Explain subnet mask vs prefix length quickly.');
-      const [a, setA] = useState('');
-      const [busy2, setBusy2] = useState(false);
-      async function ask() {
-        setBusy2(true);
-        const sys = { role: 'system', content: 'You are a helpful tutor for networking and beginner security. Keep answers crisp (<=120 words).' };
-        const usr = { role: 'user', content: q };
-        const out = await chat([sys, usr]);
-        setA(out.content);
-        setBusy2(false);
-      }
-
+      function send(){ if(!q.trim()) return; const a = localBot(q); setMsgs(m=>[...m,{role:'you', text:q},{role:'bot',text:a}]); setQ(''); }
+      React.useEffect(()=>{ lucide.createIcons(); },[open]);
       return (
-        <section id="ai" className="py-16">
-          <Container>
-            <SectionTitle kicker="AI Lab" title="Built‑in helpers (with local fallback)
-            " right={<span className="text-xs text-white/60">Works without a key • Better with OpenAI key</span>} />
-            <Card>
-              <div className="grid gap-8 md:grid-cols-3">
-                <div className="md:col-span-1">
-                  <label className="text-sm text-white/80">Optional OpenAI API key (stored only in your browser)</label>
-                  <input type="password" value={apiKey} onChange={(e)=>setApiKey(e.target.value)} placeholder="sk-..." className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2"/>
-                  <p className="mt-2 text-xs text-white/60">Leave blank to use the local demo responses.</p>
+        <>
+          <button aria-label="Open chat" onClick={()=>setOpen(true)} className="fixed bottom-5 right-5 z-50 rounded-full border border-primary/40 bg-primary/20 p-3 shadow-glow backdrop-blur hover:bg-primary/30">
+            <i data-lucide="message-circle" className="w-6 h-6 text-primary"></i>
+          </button>
+          {open && (
+            <div className="fixed inset-0 z-50 flex items-end justify-end bg-black/30 p-4" onClick={(e)=>{ if(e.target===e.currentTarget) setOpen(false); }}>
+              <div className="glass w-full max-w-md rounded-2xl border border-white/10 p-4 shadow-glow">
+                <div className="mb-3 flex items-center justify-between">
+                  <div className="flex items-center gap-2"><i data-lucide="sparkles" className="w-4 h-4 text-primary"></i><strong>Portfolio Guide</strong></div>
+                  <button onClick={()=>setOpen(false)} aria-label="Close"><i data-lucide="x" className="w-5 h-5 text-white/70"></i></button>
                 </div>
-                <div className="md:col-span-2 grid gap-6">
-                  <div>
-                    <h4 className="mb-2 font-semibold flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-primary"></i> Cover letter draft</h4>
-                    <div className="grid gap-3 md:grid-cols-2">
-                      <textarea value={about} onChange={(e)=>setAbout(e.target.value)} className="h-24 w-full rounded-xl border border-white/10 bg-white/5 p-3" />
-                      <textarea value={job} onChange={(e)=>setJob(e.target.value)} className="h-24 w-full rounded-xl border border-white/10 bg-white/5 p-3" />
+                <div className="max-h-64 overflow-y-auto rounded-lg border border-white/10 bg-black/20 p-3 text-sm">
+                  {msgs.map((m,i)=> (
+                    <div key={i} className={m.role==='you' ? 'text-right' : ''}>
+                      <div className={m.role==='you' ? 'inline-block rounded-xl bg-white/10 px-3 py-2 my-1' : 'inline-block rounded-xl bg-primary/10 text-primary px-3 py-2 my-1'}>{m.text}</div>
                     </div>
-                    <div className="mt-3 flex items-center gap-3">
-                      <Button onClick={generateLetter} disabled={busy1}>{busy1 ? 'Generating…' : 'Generate'}</Button>
-                      <span className="text-xs text-white/60">~160 words, tailored</span>
-                    </div>
-                    {letter && (
-                      <pre className="code mt-3 whitespace-pre-wrap rounded-xl border border-white/10 bg-black/30 p-3 text-sm">{letter}</pre>
-                    )}
-                  </div>
-                  <div>
-                    <h4 className="mb-2 font-semibold flex items-center gap-2"><i data-lucide="message-square" class="w-4 h-4 text-primary"></i> Ask the tutor</h4>
-                    <div className="flex flex-col gap-3 md:flex-row">
-                      <input value={q} onChange={(e)=>setQ(e.target.value)} className="flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2"/>
-                      <Button onClick={ask} disabled={busy2}>{busy2 ? 'Thinking…' : 'Ask'}</Button>
-                    </div>
-                    {a && <pre className="code mt-3 whitespace-pre-wrap rounded-xl border border-white/10 bg-black/30 p-3 text-sm">{a}</pre>}
-                  </div>
+                  ))}
+                </div>
+                <div className="mt-3 flex gap-2">
+                  <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Ask about resume, projects…" className="flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2"/>
+                  <Button onClick={send}>Send</Button>
                 </div>
               </div>
-            </Card>
-          </Container>
-        </section>
+            </div>
+          )}
+        </>
       );
     };
 
@@ -408,7 +330,7 @@
           <SectionTitle kicker="Contact" title="Get in touch" />
           <Card>
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <p className="text-white/80">Email: <a href="mailto:felipe@example.com" className="text-primary">felipe@example.com</a></p>
+              <p className="text-white/80">Email: <a href="mailto:cifuentesfelipe10080@gmail.com" className="text-primary">cifuentesfelipe10080@gmail.com</a></p>
               <div className="flex items-center gap-2">
                 <a href="#home" className="rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">Back to top</a>
               </div>
@@ -420,7 +342,18 @@
 
     const Footer = () => (
       <footer className="border-t border-white/10 py-8 text-center text-sm text-white/60">
-        Built with React (CDN) + Tailwind • Deployed on any static host.
+        <div className="flex items-center justify-center gap-4">
+          <a href="https://github.com/felipecifuentes97" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">
+            <i data-lucide="github" className="w-4 h-4"></i> GitHub
+          </a>
+          <a href="https://www.linkedin.com/search/results/all/?keywords=Felipe%20Cifuentes%20Kean%20University" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">
+            <i data-lucide="linkedin" className="w-4 h-4"></i> LinkedIn
+          </a>
+          <a href="mailto:cifuentesfelipe10080@gmail.com" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">
+            <i data-lucide="mail" className="w-4 h-4"></i> Email
+          </a>
+        </div>
+        <div className="mt-3">React (CDN) + Tailwind • Deployed on Vercel</div>
       </footer>
     );
 
@@ -433,11 +366,10 @@
           <main>
             <Hero />
             <About />
-            <Skills />
             <Projects />
             <Resume />
-            <AILab />
             <Contact />
+            <FloatingChat />
           </main>
           <Footer />
         </>
@@ -447,5 +379,6 @@
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App/>);
   </script>
+  <div class="fixed inset-0 -z-10 pointer-events-none opacity-40" id="bg-anim"></div>
 </body>
 </html>
