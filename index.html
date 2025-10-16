@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Felipe Cifuentes • Tech Portfolio</title>
+
   <!-- Tailwind (CDN) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
@@ -26,12 +27,15 @@
       }
     }
   </script>
+
   <!-- Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
   <!-- React 18 + JSX runtime -->
   <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
   <style>
     html { scroll-behavior: smooth; }
     .glass { backdrop-filter: blur(8px); background: rgba(255,255,255,0.04); }
@@ -44,9 +48,9 @@
 <body class="bg-ink text-white selection:bg-primary/30">
   <div id="root"></div>
 
-  <!-- NOTE: add data-presets="react" so JSX compiles -->
+  <!-- JSX needs the react preset -->
   <script type="text/babel" data-presets="react">
-    const { useEffect, useMemo, useRef, useState } = React;
+    const { useEffect, useState } = React;
 
     // ---------- helpers ----------
     const cx = (...c) => c.filter(Boolean).join(' ');
@@ -63,9 +67,7 @@
       const [active, setActive] = useState(ids[0]);
       useEffect(() => {
         const obs = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); });
-          },
+          (entries) => { entries.forEach((e) => e.isIntersecting && setActive(e.target.id)); },
           { threshold: 0.5 }
         );
         ids.forEach((id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
@@ -90,7 +92,7 @@
     const Button = ({ children, className, ...props }) => (
       <button
         className={cx(
-          "group relative inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-2",
+          "inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-2",
           "transition hover:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/60",
           className
         )}
@@ -100,13 +102,10 @@
       </button>
     );
 
-    const SectionTitle = ({ kicker, title, right }) => (
-      <div className="mb-6 flex items-end justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-[0.25em] text-primary/80">{kicker}</p>
-          <h2 className="mt-2 text-2xl font-semibold">{title}</h2>
-        </div>
-        {right}
+    const SectionTitle = ({ kicker, title }) => (
+      <div className="mb-6">
+        <p className="text-xs uppercase tracking-[0.25em] text-primary/80">{kicker}</p>
+        <h2 className="mt-2 text-2xl font-semibold">{title}</h2>
       </div>
     );
 
@@ -117,17 +116,25 @@
       return (
         <header className="fixed inset-x-0 top-0 z-50">
           <Container>
-            <nav className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-panel/80 p-2 glass">
-              <a href="#home" className="flex items-center gap-2 px-3 py-2">
+            <nav className="mt-4 flex items-center rounded-2xl border border-white/10 bg-panel/80 px-3 py-2 glass">
+              {/* Brand (left) */}
+              <a href="#home" className="flex items-center gap-2 rounded-lg px-3 py-2">
                 <span className="inline-block h-2 w-2 rounded-full bg-primary animate-pulse"></span>
-                <span className="code text-sm">felipe.dev</span>
+                <span className="code text-sm">Felipe Cifuentes</span>
               </a>
-              <button className="md:hidden px-3 py-2" onClick={() => setOpen((v) => !v)} aria-label="Toggle menu">
+
+              {/* hamburger (mobile) */}
+              <button className="ml-auto md:hidden px-3 py-2" onClick={() => setOpen(v => !v)} aria-label="Toggle menu">
                 <i data-lucide="menu" className="w-5 h-5"></i>
               </button>
-              <ul className={cx("md:flex md:items-center md:gap-1", open ? "block" : "hidden md:block") }>
+
+              {/* Menu (right) */}
+              <ul className={cx(
+                "md:ml-auto md:flex md:items-center md:gap-4",
+                open ? "block w-full pt-2" : "hidden md:block"
+              )}>
                 {sections.map((s) => (
-                  <li key={s.id}>
+                  <li key={s.id} className="md:inline-block">
                     <a
                       href={`#${s.id}`}
                       className={cx(
@@ -147,45 +154,28 @@
     // ---------- Sections ----------
     const Hero = () => (
       <section id="home" className="relative isolate overflow-hidden bg-techgrid [background-size:22px_22px]">
-        <div className="pointer-events-none absolute inset-0 -z-10">
-          <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-primary/20 blur-3xl"></div>
-          <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-sky-500/10 blur-3xl"></div>
-        </div>
-        <Container className="pt-28 pb-20">
-          <div className="grid items-center gap-10 md:grid-cols-2">
-            <div>
-              <p className="code mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs">
-                <span className="h-1 w-1 rounded-full bg-primary"></span> IT Senior • Graduating Spring 2026
-              </p>
-              <h1 className="text-4xl font-extrabold leading-tight md:text-5xl">
-                Felipe Cifuentes
-                <span className="block text-primary">IT major passionate about understanding how systems work — and how to protect them.</span>
-              </h1>
-              <p className="mt-4 text-white/80">Java developer, proficient in Python, learning SQL. Focused on clean code and practical problem-solving.</p>
-              <div className="mt-6 flex flex-wrap items-center gap-3">
-                <Button onClick={() => document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
-                  <i data-lucide="sparkles" className="w-4 h-4"></i>
-                  Try AI Lab
-                </Button>
-                <a href="#projects" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">
-                  <i data-lucide="terminal" className="w-4 h-4"></i>
-                  See Projects
-                </a>
-              </div>
+        <Container className="pt-28 pb-24">
+          {/* Single-column hero for more space */}
+          <div className="max-w-3xl">
+            <p className="code mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs">
+              <span className="h-1 w-1 rounded-full bg-primary"></span> IT Senior • Graduating Spring 2026
+            </p>
+            <h1 className="text-4xl font-extrabold leading-tight md:text-5xl">
+              Felipe Cifuentes
+              <span className="block text-primary">IT major passionate about understanding how systems work — and how to protect them.</span>
+            </h1>
+
+            {/* buttons only (no extra blurb) */}
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Button onClick={() => document.getElementById('projects')?.scrollIntoView({behavior:'smooth'})}>
+                <i data-lucide="sparkles" className="w-4 h-4"></i>
+                Try AI Lab
+              </Button>
+              <a href="#projects" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">
+                <i data-lucide="terminal" className="w-4 h-4"></i>
+                See Projects
+              </a>
             </div>
-            <Card className="relative">
-              <div className="code text-xs text-white/70">$ whoami</div>
-              <pre className="code mt-2 whitespace-pre-wrap text-sm">Felipe Cifuentes
-Goal: Cybersecurity Analyst
-Stack: Java • Python • SQL (learning)
-Education: Kean University (IT/Cybersecurity)
-Location: Linden, NJ, USA</pre>
-              <div className="absolute -right-6 -top-6 hidden rotate-6 md:block">
-                <span className="inline-flex animate-[pulseGlow_2.5s_ease-in-out_infinite] items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-3 py-2 text-xs text-primary shadow-glow">
-                  <i data-lucide="cpu" className="w-4 h-4"></i> Tech-themed UI
-                </span>
-              </div>
-            </Card>
           </div>
         </Container>
       </section>
@@ -222,107 +212,116 @@ Location: Linden, NJ, USA</pre>
       </section>
     );
 
+    // small inline chatbot (replaces the old "Contact me →" on Projects)
+    const MiniChatbot = () => {
+      const [q, setQ] = useState('Where can I view your resume?');
+      const [msgs, setMsgs] = useState([
+        { role: 'bot', text: 'Hi! Ask about resume, projects, LinkedIn, GitHub, or contact.' }
+      ]);
+
+      function localBot(input) {
+        const t = (input || '').toLowerCase();
+        if (t.includes('resume')) return 'Open Resume → expand the card in the Resume section (PDF embeds).';
+        if (t.includes('project') || t.includes('work')) return 'Projects: Flight Tracker Pro — used a flights API to find cheap routes.';
+        if (t.includes('linkedin')) return 'LinkedIn: search “Felipe Cifuentes Kean University” (link in footer/contact).';
+        if (t.includes('github') || t.includes('code')) return 'GitHub: github.com/felipecifuentes97';
+        if (t.includes('contact') || t.includes('email')) return 'Email: cifuentesfelipe1080@gmail.com';
+        return 'Try: resume, projects, LinkedIn, GitHub, or contact.';
+      }
+
+      const send = () => {
+        if (!q.trim()) return;
+        const a = localBot(q);
+        setMsgs(m => [...m, { role:'you', text:q }, { role:'bot', text:a }]);
+        setQ('');
+      };
+
+      return (
+        <Card className="h-full">
+          <div className="mb-3 flex items-center gap-2">
+            <i data-lucide="bot" className="w-4 h-4 text-primary"></i>
+            <strong>AI Chatbot</strong>
+          </div>
+          <div className="max-h-52 overflow-y-auto rounded-lg border border-white/10 bg-black/20 p-3 text-sm">
+            {msgs.map((m,i)=>(
+              <div key={i} className={m.role==='you' ? 'text-right' : ''}>
+                <div className={m.role==='you'
+                  ? 'inline-block rounded-xl bg-white/10 px-3 py-2 my-1'
+                  : 'inline-block rounded-xl bg-primary/10 text-primary px-3 py-2 my-1'}>
+                  {m.text}
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 flex gap-2">
+            <input
+              value={q}
+              onChange={e=>setQ(e.target.value)}
+              placeholder="Ask about the site…"
+              className="flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2"
+            />
+            <Button onClick={send}>Send</Button>
+          </div>
+        </Card>
+      );
+    };
+
     const Projects = () => (
       <section id="projects" className="py-16">
         <Container>
-          <SectionTitle kicker="Projects" title="Things I’ve built" right={<a href="#contact" className="text-sm text-primary">Contact me →</a>} />
+          <SectionTitle kicker="Projects" title="Things I’ve built" />
           <div className="grid gap-6 md:grid-cols-3">
-            <Card>
+            <Card className="md:col-span-2">
               <h3 className="font-semibold">Flight Tracker Pro</h3>
               <p className="mt-1 text-sm text-white/80">Used a flights API to find the cheapest routes between locations; built as part of coursework.</p>
               <div className="mt-3 flex flex-wrap gap-2"><Badge>JavaScript</Badge><Badge>API</Badge></div>
             </Card>
-            {/* Add more <Card> items here as you grow the portfolio */}
+            <MiniChatbot />
           </div>
         </Container>
       </section>
     );
 
-    const Resume = () => {
-      return (
-        <section id="resume" className="py-16">
-          <Container>
-            <SectionTitle kicker="Resume" title="Upload or view" />
-            <Card>
-              <details className="group">
-                <summary className="flex cursor-pointer list-none items-center justify-between">
-                  <span className="flex items-center gap-2"><i data-lucide="file-text" className="w-4 h-4 text-primary"></i> <strong className="mr-2">My Resume (PDF)</strong><span className="text-white/60">click to expand</span></span>
-                  <i data-lucide="chevron-down" className="w-4 h-4 transition group-open:rotate-180"></i>
-                </summary>
-                <div className="mt-4 space-y-4">
-                  <p className="text-white/80">Option 1: Upload a PDF now (great for in-class demo). Option 2: Place <code className="code">resume.pdf</code> next to this <code className="code">index.html</code> and it will embed automatically.</p>
-                  <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                    <input
-                      type="file"
-                      accept="application/pdf"
-                      onChange={(e)=>{ const f=e.target.files?.[0]; if(f){ const u=URL.createObjectURL(f); const frame=document.getElementById('resume-frame'); frame?.setAttribute('src',u);} }}
-                      className="block rounded-xl border border-white/10 bg-white/5 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/20 file:px-3 file:py-2 file:text-sm file:text-primary"
-                    />
-                    <a
-                      href="#resume"
-                      className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-2 text-primary"
-                      onClick={(e)=>{ e.preventDefault(); const f=document.getElementById('resume-frame'); if(f?.getAttribute('src')){f.scrollIntoView({behavior:'smooth'});} }}
-                    >
-                      <i data-lucide="external-link" className="w-4 h-4"></i>Open below
-                    </a>
-                  </div>
-                  <div className="h-[70vh] w-full overflow-hidden rounded-xl border border-white/10">
-                    <iframe id="resume-frame" title="Resume PDF" className="h-full w-full" src="./resume.pdf"></iframe>
-                  </div>
+    const Resume = () => (
+      <section id="resume" className="py-16">
+        <Container>
+          <SectionTitle kicker="Resume" title="Upload or view" />
+          <Card>
+            <details className="group">
+              <summary className="flex cursor-pointer list-none items-center justify-between">
+                <span className="flex items-center gap-2">
+                  <i data-lucide="file-text" className="w-4 h-4 text-primary"></i>
+                  <strong className="mr-2">My Resume (PDF)</strong>
+                  <span className="text-white/60">click to expand</span>
+                </span>
+                <i data-lucide="chevron-down" className="w-4 h-4 transition group-open:rotate-180"></i>
+              </summary>
+              <div className="mt-4 space-y-4">
+                <p className="text-white/80">Upload a PDF now, or place <code className="code">resume.pdf</code> next to this <code className="code">index.html</code> and it will embed automatically.</p>
+                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e)=>{ const f=e.target.files?.[0]; if(f){ const u=URL.createObjectURL(f); const frame=document.getElementById('resume-frame'); frame?.setAttribute('src',u);} }}
+                    className="block rounded-xl border border-white/10 bg-white/5 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/20 file:px-3 file:py-2 file:text-sm file:text-primary"
+                  />
+                  <a
+                    href="#resume"
+                    className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-2 text-primary"
+                    onClick={(e)=>{ e.preventDefault(); const f=document.getElementById('resume-frame'); if(f?.getAttribute('src')){f.scrollIntoView({behavior:'smooth'});} }}
+                  >
+                    <i data-lucide="external-link" className="w-4 h-4"></i>Open below
+                  </a>
                 </div>
-              </details>
-            </Card>
-          </Container>
-        </section>
-      );
-    };
-
-    // ---------- Floating Chatbot ----------
-    const FloatingChat = () => {
-      const [open, setOpen] = React.useState(false);
-      const [q, setQ] = React.useState('Where can I view your resume?');
-      const [msgs, setMsgs] = React.useState([{role:'bot', text:'Hi! Ask about resume, projects, contact, or LinkedIn/GitHub.'}]);
-      function localBot(input) {
-        const t = (input||'').toLowerCase();
-        if (t.includes('resume')) return 'Open Resume → click the card to expand. It embeds resume.pdf or an uploaded PDF.';
-        if (t.includes('project') || t.includes('work')) return 'Projects: Flight Tracker Pro — used an API to find cheap flights between locations.';
-        if (t.includes('about')) return 'About: IT senior at Kean University (Spring 2026). Goal: Cybersecurity Analyst.';
-        if (t.includes('linkedin')) return 'LinkedIn link is in the footer (search for Felipe Cifuentes at Kean University).';
-        if (t.includes('github') || t.includes('code')) return 'GitHub: github.com/felipecifuentes97';
-        if (t.includes('contact') || t.includes('email')) return 'Email: cifuentesfelipe10080@gmail.com';
-        return 'Try asking about: resume, projects, about, LinkedIn, GitHub, or contact.';
-      }
-      function send(){ if(!q.trim()) return; const a = localBot(q); setMsgs(m=>[...m,{role:'you', text:q},{role:'bot',text:a}]); setQ(''); }
-      React.useEffect(()=>{ lucide.createIcons(); },[open]);
-      return (
-        <>
-          <button aria-label="Open chat" onClick={()=>setOpen(true)} className="fixed bottom-5 right-5 z-50 rounded-full border border-primary/40 bg-primary/20 p-3 shadow-glow backdrop-blur hover:bg-primary/30">
-            <i data-lucide="message-circle" className="w-6 h-6 text-primary"></i>
-          </button>
-          {open && (
-            <div className="fixed inset-0 z-50 flex items-end justify-end bg-black/30 p-4" onClick={(e)=>{ if(e.target===e.currentTarget) setOpen(false); }}>
-              <div className="glass w-full max-w-md rounded-2xl border border-white/10 p-4 shadow-glow">
-                <div className="mb-3 flex items-center justify-between">
-                  <div className="flex items-center gap-2"><i data-lucide="sparkles" className="w-4 h-4 text-primary"></i><strong>Portfolio Guide</strong></div>
-                  <button onClick={()=>setOpen(false)} aria-label="Close"><i data-lucide="x" className="w-5 h-5 text-white/70"></i></button>
-                </div>
-                <div className="max-h-64 overflow-y-auto rounded-lg border border-white/10 bg-black/20 p-3 text-sm">
-                  {msgs.map((m,i)=> (
-                    <div key={i} className={m.role==='you' ? 'text-right' : ''}>
-                      <div className={m.role==='you' ? 'inline-block rounded-xl bg-white/10 px-3 py-2 my-1' : 'inline-block rounded-xl bg-primary/10 text-primary px-3 py-2 my-1'}>{m.text}</div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-3 flex gap-2">
-                  <input value={q} onChange={e=>setQ(e.target.value)} placeholder="Ask about resume, projects…" className="flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2"/>
-                  <Button onClick={send}>Send</Button>
+                <div className="h-[70vh] w-full overflow-hidden rounded-xl border border-white/10">
+                  <iframe id="resume-frame" title="Resume PDF" className="h-full w-full" src="./resume.pdf"></iframe>
                 </div>
               </div>
-            </div>
-          )}
-        </>
-      );
-    };
+            </details>
+          </Card>
+        </Container>
+      </section>
+    );
 
     const Contact = () => (
       <section id="contact" className="py-16">
@@ -330,8 +329,18 @@ Location: Linden, NJ, USA</pre>
           <SectionTitle kicker="Contact" title="Get in touch" />
           <Card>
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <p className="text-white/80">Email: <a href="mailto:cifuentesfelipe10080@gmail.com" className="text-primary">cifuentesfelipe10080@gmail.com</a></p>
+              <p className="text-white/90 text-base">
+                Email: <a href="mailto:cifuentesfelipe1080@gmail.com" className="text-primary underline">cifuentesfelipe1080@gmail.com</a>
+              </p>
               <div className="flex items-center gap-2">
+                <a href="https://github.com/felipecifuentes97" target="_blank" rel="noreferrer"
+                   className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-3 py-2 text-primary hover:bg-primary/20">
+                  <i data-lucide="github" className="w-4 h-4"></i> GitHub
+                </a>
+                <a href="https://www.linkedin.com/search/results/all/?keywords=Felipe%20Cifuentes%20Kean%20University" target="_blank" rel="noreferrer"
+                   className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-3 py-2 text-primary hover:bg-primary/20">
+                  <i data-lucide="linkedin" className="w-4 h-4"></i> LinkedIn
+                </a>
                 <a href="#home" className="rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">Back to top</a>
               </div>
             </div>
@@ -349,7 +358,7 @@ Location: Linden, NJ, USA</pre>
           <a href="https://www.linkedin.com/search/results/all/?keywords=Felipe%20Cifuentes%20Kean%20University" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">
             <i data-lucide="linkedin" className="w-4 h-4"></i> LinkedIn
           </a>
-          <a href="mailto:cifuentesfelipe10080@gmail.com" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">
+          <a href="mailto:cifuentesfelipe1080@gmail.com" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">
             <i data-lucide="mail" className="w-4 h-4"></i> Email
           </a>
         </div>
@@ -369,7 +378,6 @@ Location: Linden, NJ, USA</pre>
             <Projects />
             <Resume />
             <Contact />
-            <FloatingChat />
           </main>
           <Footer />
         </>
@@ -379,6 +387,7 @@ Location: Linden, NJ, USA</pre>
     const root = ReactDOM.createRoot(document.getElementById('root'));
     root.render(<App/>);
   </script>
+
   <div class="fixed inset-0 -z-10 pointer-events-none opacity-40" id="bg-anim"></div>
 </body>
 </html>
