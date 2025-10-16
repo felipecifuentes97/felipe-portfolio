@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Felipe Cifuentes • Tech Portfolio</title>
+  <!-- Tailwind (CDN) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ["Inter", "ui-sans-serif", "system-ui", "-apple-system"] },
+          colors: {
+            primary: { DEFAULT: '#00E5FF' },
+            ink: '#0B1021',
+            panel: '#0F162E'
+          },
+          boxShadow: {
+            glow: '0 0 30px rgba(0,229,255,0.35)'
+          },
+          backgroundImage: {
+            techgrid: 'radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0)'
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- React 18 + JSX runtime -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script crossorigin src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    .glass { backdrop-filter: blur(8px); background: rgba(255,255,255,0.04); }
+    .code { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    /* neon caret */
+    @keyframes pulseGlow { 0%,100%{box-shadow:0 0 0 rgba(0,229,255,0)} 50%{box-shadow:0 0 24px rgba(0,229,255,0.35)}}
+  </style>
+</head>
+<body class="bg-ink text-white selection:bg-primary/30">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useEffect, useMemo, useRef, useState } = React;
+
+    // ---------- helpers ----------
+    const cx = (...c) => c.filter(Boolean).join(' ');
+
+    const sections = [
+      { id: 'home', label: 'Home' },
+      { id: 'about', label: 'About' },
+      { id: 'skills', label: 'Skills' },
+      { id: 'projects', label: 'Projects' },
+      { id: 'resume', label: 'Resume' },
+      { id: 'ai', label: 'AI Lab' },
+      { id: 'contact', label: 'Contact' },
+    ];
+
+    function useActiveSection(ids) {
+      const [active, setActive] = useState(ids[0]);
+      useEffect(() => {
+        const obs = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => { if (e.isIntersecting) setActive(e.target.id); });
+          },
+          { threshold: 0.5 }
+        );
+        ids.forEach((id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
+        return () => obs.disconnect();
+      }, [ids]);
+      return active;
+    }
+
+    // ---------- UI primitives ----------
+    const Container = ({ children, className }) => (
+      <div className={cx("mx-auto w-full max-w-6xl px-4", className)}>{children}</div>
+    );
+
+    const Card = ({ children, className }) => (
+      <div className={cx("glass rounded-2xl border border-white/10 p-6 shadow-glow", className)}>{children}</div>
+    );
+
+    const Badge = ({ children }) => (
+      <span className="code rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs">{children}</span>
+    );
+
+    const Button = ({ children, className, ...props }) => (
+      <button
+        className={cx(
+          "group relative inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-2",
+          "transition hover:bg-primary/20 focus:outline-none focus:ring-2 focus:ring-primary/60",
+          className
+        )}
+        {...props}
+      >
+        {children}
+      </button>
+    );
+
+    const SectionTitle = ({ kicker, title, right }) => (
+      <div className="mb-6 flex items-end justify-between">
+        <div>
+          <p className="text-xs uppercase tracking-[0.25em] text-primary/80">{kicker}</p>
+          <h2 className="mt-2 text-2xl font-semibold">{title}</h2>
+        </div>
+        {right}
+      </div>
+    );
+
+    // ---------- Navbar ----------
+    const Navbar = ({ active }) => {
+      const [open, setOpen] = useState(false);
+      useEffect(() => { window.addEventListener('scroll', () => setOpen(false)); }, []);
+      return (
+        <header className="fixed inset-x-0 top-0 z-50">
+          <Container>
+            <nav className="mt-4 flex items-center justify-between rounded-2xl border border-white/10 bg-panel/80 p-2 glass">
+              <a href="#home" className="flex items-center gap-2 px-3 py-2">
+                <span className="inline-block h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+                <span className="code text-sm">felipe.dev</span>
+              </a>
+              <button className="md:hidden px-3 py-2" onClick={() => setOpen((v) => !v)} aria-label="Toggle menu">
+                <i data-lucide="menu" class="w-5 h-5"></i>
+              </button>
+              <ul className={cx("md:flex md:items-center md:gap-1", open ? "block" : "hidden md:block") }>
+                {sections.map((s) => (
+                  <li key={s.id}>
+                    <a
+                      href={`#${s.id}`}
+                      className={cx(
+                        "block rounded-xl px-3 py-2 text-sm transition",
+                        active === s.id ? "bg-primary/20 text-primary" : "hover:bg-white/5"
+                      )}
+                    >{s.label}</a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          </Container>
+        </header>
+      );
+    };
+
+    // ---------- Sections ----------
+    const Hero = () => (
+      <section id="home" className="relative isolate overflow-hidden bg-techgrid [background-size:22px_22px]">
+        <div className="pointer-events-none absolute inset-0 -z-10">
+          <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-primary/20 blur-3xl"></div>
+          <div className="absolute bottom-0 right-0 h-72 w-72 rounded-full bg-sky-500/10 blur-3xl"></div>
+        </div>
+        <Container className="pt-28 pb-20">
+          <div className="grid items-center gap-10 md:grid-cols-2">
+            <div>
+              <p className="code mb-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs">
+                <span className="h-1 w-1 rounded-full bg-primary"></span> Senior IT Major • Graduating Spring 2026
+              </p>
+              <h1 className="text-4xl font-extrabold leading-tight md:text-5xl">
+                Hey, I'm Felipe —
+                <span className="block text-primary">Java coder, Python‑proficient, SQL learner.</span>
+              </h1>
+              <p className="mt-4 text-white/80">Building clean, reliable systems and human‑friendly interfaces. Passionate about networking, security basics, and shipping useful tools.</p>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                <Button onClick={() => document.getElementById('ai').scrollIntoView({behavior:'smooth'})}>
+                  <i data-lucide="sparkles" class="w-4 h-4"></i>
+                  Try AI Lab
+                </Button>
+                <a href="#projects" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 hover:bg-white/5">
+                  <i data-lucide="terminal" class="w-4 h-4"></i>
+                  See Projects
+                </a>
+              </div>
+            </div>
+            <Card className="relative">
+              <div className="code text-xs text-white/70">$ whoami</div>
+              <pre className="code mt-2 whitespace-pre-wrap text-sm">Felipe Cifuentes — Global Social Media @ AutogenAI\nStack: Java • Python • SQL • HTML/CSS/JS\nFocus: Full‑stack fundamentals, security, networks\nCurrently: Finishing senior year • Building portfolio\nLocation: USA / UK</pre>
+              <div className="absolute -right-6 -top-6 hidden rotate-6 md:block">
+                <span className="inline-flex animate-[pulseGlow_2.5s_ease-in-out_infinite] items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-3 py-2 text-xs text-primary shadow-glow">
+                  <i data-lucide="cpu" class="w-4 h-4"></i> Tech‑themed UI
+                </span>
+              </div>
+            </Card>
+          </div>
+        </Container>
+      </section>
+    );
+
+    const About = () => (
+      <section id="about" className="py-16">
+        <Container>
+          <SectionTitle kicker="About" title="Who I am" />
+          <div className="grid gap-6 md:grid-cols-3">
+            <Card className="md:col-span-2">
+              <p className="leading-relaxed text-white/85">
+                I'm an <strong>IT major senior</strong> graduating in <strong>Spring 2026</strong>. I code in <strong>Java</strong>, am proficient in <strong>Python</strong>, and I'm actively learning <strong>SQL</strong>.
+                I enjoy solving practical problems, explaining complex topics simply, and shipping small tools that help classmates and teams.
+              </p>
+              <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Comfortable with Git & CLI</li>
+                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Basic networking & security concepts</li>
+                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Front‑end fundamentals (React style)</li>
+                <li className="flex items-center gap-2 text-white/80"><i data-lucide="check" class="w-4 h-4 text-primary"></i> Clear documentation & presentation</li>
+              </ul>
+            </Card>
+            <Card>
+              <h3 className="mb-2 font-semibold">Fast facts</h3>
+              <div className="space-y-2 text-white/85">
+                <div><span className="text-white/60">Degree:</span> B.S. Information Technology</div>
+                <div><span className="text-white/60">Grad Date:</span> Spring 2026</div>
+                <div><span className="text-white/60">Interests:</span> Security, web apps, DevTools</div>
+                <div><span className="text-white/60">Based:</span> NJ / NY area</div>
+              </div>
+            </Card>
+          </div>
+        </Container>
+      </section>
+    );
+
+    const Skills = () => (
+      <section id="skills" className="py-16">
+        <Container>
+          <SectionTitle kicker="Skills" title="Tools & languages I use" />
+          <Card>
+            <div className="flex flex-wrap gap-2">
+              {['Java','Python','SQL','HTML','CSS','JavaScript','Git','Linux Basics','Networking'].map((s) => (
+                <Badge key={s}>{s}</Badge>
+              ))}
+            </div>
+          </Card>
+        </Container>
+      </section>
+    );
+
+    const Projects = () => (
+      <section id="projects" className="py-16">
+        <Container>
+          <SectionTitle kicker="Projects" title="Things I’ve built" right={<a href="#contact" className="text-sm text-primary">Need a demo? →</a>} />
+          <div className="grid gap-6 md:grid-cols-3">
+            {[
+              { title: 'Network Tools', desc: 'Small React widgets that explain subnetting & ports visually.', tags: ['React','JavaScript'] },
+              { title: 'CLI Helper', desc: 'Python script that scaffolds folders and README files for labs.', tags: ['Python'] },
+              { title: 'SQL Practice', desc: 'Mini database with queries for joins, grouping, indexes.', tags: ['SQL'] },
+            ].map((p) => (
+              <Card key={p.title}>
+                <h3 className="font-semibold">{p.title}</h3>
+                <p className="mt-1 text-sm text-white/80">{p.desc}</p>
+                <div className="mt-3 flex flex-wrap gap-2">{p.tags.map((t) => <Badge key={t}>{t}</Badge>)}</div>
+              </Card>
+            ))}
+          </div>
+        </Container>
+      </section>
+    );
+
+    const Resume = () => {
+      const [file, setFile] = useState(null);
+      const [url, setUrl] = useState("");
+      return (
+        <section id="resume" className="py-16">
+          <Container>
+            <SectionTitle kicker="Resume" title="Upload or update your resume" />
+            <Card>
+              <div className="flex flex-col items-start gap-4 md:flex-row md:items-center md:justify-between">
+                <div className="space-y-2">
+                  <p className="text-white/85">Upload a PDF. It will be available locally as a download link for your presentation.</p>
+                  <input
+                    type="file"
+                    accept="application/pdf"
+                    onChange={(e) => {
+                      const f = e.target.files?.[0];
+                      setFile(f || null);
+                      if (f) setUrl(URL.createObjectURL(f));
+                    }}
+                    className="block rounded-xl border border-white/10 bg-white/5 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/20 file:px-3 file:py-2 file:text-sm file:text-primary"
+                  />
+                  {file && (
+                    <p className="text-sm text-white/70">
+                      Chosen: <span className="code">{file.name}</span> • {(file.size/1024/1024).toFixed(2)} MB
+                    </p>
+                  )}
+                </div>
+                <div>
+                  {url ? (
+                    <a href={url} download className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-2 text-primary">
+                      <i data-lucide="download" class="w-4 h-4"></i> Download copy
+                    </a>
+                  ) : (
+                    <span className="text-white/60">No file selected</span>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </Container>
+        </section>
+      );
+    };
+
+    // ---------- AI Lab (client‑side with optional OpenAI key) ----------
+    function useOpenAI(apiKey) {
+      async function chat(messages, model = 'gpt-4o-mini') {
+        if (!apiKey) {
+          // Local fallback: simple templated output so the demo always works
+          const last = messages[messages.length - 1]?.content || '';
+          return {
+            role: 'assistant',
+            content: `\u2728 Local demo (no API key set). Based on your input, here are tips:\n- Keep it concise.\n- Mention Java, Python, SQL.\n- Add a quantifiable result.\nInput: ${last.slice(0,180)}...`
+          };
+        }
+        const res = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model,
+            messages,
+            temperature: 0.2
+          })
+        });
+        const json = await res.json();
+        const msg = json.choices?.[0]?.message;
+        return msg || { role: 'assistant', content: 'No response' };
+      }
+      return { chat };
+    }
+
+    const AILab = () => {
+      const [apiKey, setApiKey] = useState('');
+      const { chat } = useOpenAI(apiKey);
+
+      // Cover letter helper
+      const [job, setJob] = useState('Junior IT Support Intern at Estée Lauder — basic networking, helpdesk, Python scripting helpful.');
+      const [about, setAbout] = useState('Senior IT major (Spring 2026). Java, proficient Python, learning SQL. Interested in security & networks.');
+      const [letter, setLetter] = useState('');
+      const [busy1, setBusy1] = useState(false);
+
+      async function generateLetter() {
+        setBusy1(true);
+        const sys = { role: 'system', content: 'You write concise, confident cover letters for an IT student. 150–180 words. Use plain English. Mention Java, Python, SQL and security/networking interest.' };
+        const usr = { role: 'user', content: `About me: ${about}\nJob: ${job}` };
+        const out = await chat([sys, usr]);
+        setLetter(out.content);
+        setBusy1(false);
+      }
+
+      // Q&A chatbot
+      const [q, setQ] = useState('Explain subnet mask vs prefix length quickly.');
+      const [a, setA] = useState('');
+      const [busy2, setBusy2] = useState(false);
+      async function ask() {
+        setBusy2(true);
+        const sys = { role: 'system', content: 'You are a helpful tutor for networking and beginner security. Keep answers crisp (<=120 words).' };
+        const usr = { role: 'user', content: q };
+        const out = await chat([sys, usr]);
+        setA(out.content);
+        setBusy2(false);
+      }
+
+      return (
+        <section id="ai" className="py-16">
+          <Container>
+            <SectionTitle kicker="AI Lab" title="Built‑in helpers (with local fallback)
+            " right={<span className="text-xs text-white/60">Works without a key • Better with OpenAI key</span>} />
+            <Card>
+              <div className="grid gap-8 md:grid-cols-3">
+                <div className="md:col-span-1">
+                  <label className="text-sm text-white/80">Optional OpenAI API key (stored only in your browser)</label>
+                  <input type="password" value={apiKey} onChange={(e)=>setApiKey(e.target.value)} placeholder="sk-..." className="mt-2 w-full rounded-xl border border-white/10 bg-white/5 px-3 py-2"/>
+                  <p className="mt-2 text-xs text-white/60">Leave blank to use the local demo responses.</p>
+                </div>
+                <div className="md:col-span-2 grid gap-6">
+                  <div>
+                    <h4 className="mb-2 font-semibold flex items-center gap-2"><i data-lucide="file-text" class="w-4 h-4 text-primary"></i> Cover letter draft</h4>
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <textarea value={about} onChange={(e)=>setAbout(e.target.value)} className="h-24 w-full rounded-xl border border-white/10 bg-white/5 p-3" />
+                      <textarea value={job} onChange={(e)=>setJob(e.target.value)} className="h-24 w-full rounded-xl border border-white/10 bg-white/5 p-3" />
+                    </div>
+                    <div className="mt-3 flex items-center gap-3">
+                      <Button onClick={generateLetter} disabled={busy1}>{busy1 ? 'Generating…' : 'Generate'}</Button>
+                      <span className="text-xs text-white/60">~160 words, tailored</span>
+                    </div>
+                    {letter && (
+                      <pre className="code mt-3 whitespace-pre-wrap rounded-xl border border-white/10 bg-black/30 p-3 text-sm">{letter}</pre>
+                    )}
+                  </div>
+                  <div>
+                    <h4 className="mb-2 font-semibold flex items-center gap-2"><i data-lucide="message-square" class="w-4 h-4 text-primary"></i> Ask the tutor</h4>
+                    <div className="flex flex-col gap-3 md:flex-row">
+                      <input value={q} onChange={(e)=>setQ(e.target.value)} className="flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2"/>
+                      <Button onClick={ask} disabled={busy2}>{busy2 ? 'Thinking…' : 'Ask'}</Button>
+                    </div>
+                    {a && <pre className="code mt-3 whitespace-pre-wrap rounded-xl border border-white/10 bg-black/30 p-3 text-sm">{a}</pre>}
+                  </div>
+                </div>
+              </div>
+            </Card>
+          </Container>
+        </section>
+      );
+    };
+
+    const Contact = () => (
+      <section id="contact" className="py-16">
+        <Container>
+          <SectionTitle kicker="Contact" title="Get in touch" />
+          <Card>
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <p className="text-white/80">Email: <a href="mailto:felipe@example.com" className="text-primary">felipe@example.com</a></p>
+              <div className="flex items-center gap-2">
+                <a href="#home" className="rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">Back to top</a>
+              </div>
+            </div>
+          </Card>
+        </Container>
+      </section>
+    );
+
+    const Footer = () => (
+      <footer className="border-t border-white/10 py-8 text-center text-sm text-white/60">
+        Built with React (CDN) + Tailwind • Deployed on any static host.
+      </footer>
+    );
+
+    const App = () => {
+      const active = useActiveSection(sections.map(s => s.id));
+      useEffect(() => { lucide.createIcons(); });
+      return (
+        <>
+          <Navbar active={active} />
+          <main>
+            <Hero />
+            <About />
+            <Skills />
+            <Projects />
+            <Resume />
+            <AILab />
+            <Contact />
+          </main>
+          <Footer />
+        </>
+      );
+    };
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App/>);
+  </script>
+</body>
+</html>
