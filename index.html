@@ -212,7 +212,7 @@
       </section>
     );
 
-    // small inline chatbot (replaces the old "Contact me →" on Projects)
+    // small inline chatbot
     const MiniChatbot = () => {
       const [q, setQ] = useState('Where can I view your resume?');
       const [msgs, setMsgs] = useState([
@@ -222,10 +222,10 @@
       function localBot(input) {
         const t = (input || '').toLowerCase();
         if (t.includes('resume')) return 'Open Resume → expand the card in the Resume section (PDF embeds).';
-        if (t.includes('project') || t.includes('work')) return 'Projects: Flight Tracker Pro — used a flights API to find cheap routes.';
+        if (t.includes('project') || t.includes('work')) return 'Projects: Breakout — open via the Play button.';
         if (t.includes('linkedin')) return 'LinkedIn: search “Felipe Cifuentes Kean University” (link in footer/contact).';
         if (t.includes('github') || t.includes('code')) return 'GitHub: github.com/felipecifuentes97';
-        if (t.includes('contact') || t.includes('email')) return 'Email: cifuentesfelipe1080@gmail.com';
+        if (t.includes('contact') || t.includes('email')) return 'Email: cifuentesfelipe10080@gmail.com';
         return 'Try: resume, projects, LinkedIn, GitHub, or contact.';
       }
 
@@ -272,9 +272,16 @@
           <SectionTitle kicker="Projects" title="Things I’ve built" />
           <div className="grid gap-6 md:grid-cols-3">
             <Card className="md:col-span-2">
-              <h3 className="font-semibold">Flight Tracker Pro</h3>
-              <p className="mt-1 text-sm text-white/80">Used a flights API to find the cheapest routes between locations; built as part of coursework.</p>
-              <div className="mt-3 flex flex-wrap gap-2"><Badge>JavaScript</Badge><Badge>API</Badge></div>
+              <h3 className="font-semibold">Breakout</h3>
+              <p className="mt-1 text-sm text-white/80">Classic paddle-and-bricks game. Opens in a new tab.</p>
+              <div className="mt-3 flex flex-wrap gap-2"><Badge>JavaScript</Badge><Badge>HTML</Badge><Badge>Canvas</Badge></div>
+              <div className="mt-3">
+                <a href="./game_2/index.html" target="_blank" rel="noreferrer"
+                   className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-2 text-primary hover:bg-primary/20">
+                  <i data-lucide="play" className="w-4 h-4"></i> Play
+                </a>
+              </div>
+              <p className="mt-2 text-xs text-white/50">Path: <span className="code">./game_2/index.html</span></p>
             </Card>
             <MiniChatbot />
           </div>
@@ -285,7 +292,7 @@
     const Resume = () => (
       <section id="resume" className="py-16">
         <Container>
-          <SectionTitle kicker="Resume" title="Upload or view" />
+          <SectionTitle kicker="Resume" title="View" />
           <Card>
             <details className="group">
               <summary className="flex cursor-pointer list-none items-center justify-between">
@@ -297,22 +304,7 @@
                 <i data-lucide="chevron-down" className="w-4 h-4 transition group-open:rotate-180"></i>
               </summary>
               <div className="mt-4 space-y-4">
-                <p className="text-white/80">Upload a PDF now, or place <code className="code">resume.pdf</code> next to this <code className="code">index.html</code> and it will embed automatically.</p>
-                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                  <input
-                    type="file"
-                    accept="application/pdf"
-                    onChange={(e)=>{ const f=e.target.files?.[0]; if(f){ const u=URL.createObjectURL(f); const frame=document.getElementById('resume-frame'); frame?.setAttribute('src',u);} }}
-                    className="block rounded-xl border border-white/10 bg-white/5 file:mr-3 file:rounded-lg file:border-0 file:bg-primary/20 file:px-3 file:py-2 file:text-sm file:text-primary"
-                  />
-                  <a
-                    href="#resume"
-                    className="inline-flex items-center gap-2 rounded-xl border border-primary/40 bg-primary/10 px-4 py-2 text-primary"
-                    onClick={(e)=>{ e.preventDefault(); const f=document.getElementById('resume-frame'); if(f?.getAttribute('src')){f.scrollIntoView({behavior:'smooth'});} }}
-                  >
-                    <i data-lucide="external-link" className="w-4 h-4"></i>Open below
-                  </a>
-                </div>
+                {/* Removed upload instructions and file input */}
                 <div className="h-[70vh] w-full overflow-hidden rounded-xl border border-white/10">
                   <iframe id="resume-frame" title="Resume PDF" className="h-full w-full" src="./resume.pdf"></iframe>
                 </div>
@@ -330,7 +322,7 @@
           <Card>
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <p className="text-white/90 text-base">
-                Email: <a href="mailto:cifuentesfelipe1080@gmail.com" className="text-primary underline">cifuentesfelipe1080@gmail.com</a>
+                Email: <a href="mailto:cifuentesfelipe10080@gmail.com" className="text-primary underline">cifuentesfelipe10080@gmail.com</a>
               </p>
               <div className="flex items-center gap-2">
                 <a href="https://github.com/felipecifuentes97" target="_blank" rel="noreferrer"
@@ -358,7 +350,7 @@
           <a href="https://www.linkedin.com/search/results/all/?keywords=Felipe%20Cifuentes%20Kean%20University" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">
             <i data-lucide="linkedin" className="w-4 h-4"></i> LinkedIn
           </a>
-          <a href="mailto:cifuentesfelipe1080@gmail.com" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">
+          <a href="mailto:cifuentesfelipe10080@gmail.com" className="inline-flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 hover:bg-white/5">
             <i data-lucide="mail" className="w-4 h-4"></i> Email
           </a>
         </div>
